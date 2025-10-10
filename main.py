@@ -113,7 +113,7 @@ def main(request):
 
 if __name__ == "__main__":
     # For local testing
-    api_key = "a1ea0de6258fefcb1cff24f671cada88" # Use your API key
+    api_key = "SampleApiKey" # Use your API key
     city = "Thessaloniki" # Use your selected location
     gcp_project_id = "weather-data-analysis-474716" # Use your GCP Project ID
     gcp_dataset_name = "weather_data" # Use your BigQuery dataset name
