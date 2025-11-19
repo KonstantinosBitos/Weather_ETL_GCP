@@ -15,3 +15,11 @@ ETL pipeline that fetches hourly weather data from WeatherAPI, transforms it usi
    export WEATHER_API_KEY="your_api_key"
 3. Run the script:
    python main.py
+
+---
+
+## Connect
+
+**Author:** Konstantinos Bitos  
+Email: [bitoskostas1@gmail.com](mailto:bitoskostas1@gmail.com)  
+Medium: [@bitoskostas1](https://medium.com/@bitoskostas1)
