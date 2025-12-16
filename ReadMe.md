@@ -6,7 +6,6 @@ ETL pipeline that fetches hourly weather data from WeatherAPI, transforms it usi
 ## Tech Stack
 - Python (requests, pandas)
 - Google Cloud Platform (Cloud Functions, Cloud Scheduler, BigQuery)
-- Looker Studio (optional dashboard) (not implemented yet)
 
 ## How to Run Locally
 1. Install dependencies:
