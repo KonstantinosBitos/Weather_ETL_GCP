@@ -3,6 +3,7 @@ import pandas as pd
 from google.cloud import bigquery
 import os
 
+# Check if the code is running inside Google Cloud by checking the environmental variables.
 def is_running_in_gcp():
     return os.getenv('K_SERVICE', False)
 
@@ -19,9 +20,8 @@ def extract_data(request):
 
     return data
 
+# Transform data into a clean dict and then into a dataframe
 def transform_data(data):
-    # Transform data
-    # Unnest the JSON data
     transformed_data = {
         "lon": data['coord']['lon'],
         "lat": data['coord']['lat'],
@@ -59,13 +59,14 @@ def transform_data(data):
 def upload_df_to_bigquery(dataframe: pd.DataFrame, project_id: str, dataset_id: str, table_name: str):
     """Uploads a pandas DataFrame to a BigQuery table."""
 
-    # Construct a BigQuery client object.
+    # Construct a BigQuery client object. (If local use biquery.json file)
     client = bigquery.Client() if is_running_in_gcp() else bigquery.Client.from_service_account_json('bigquery.json')
     dataset_id = f"{project_id}.{dataset_id}"
 
     # Construct a full Dataset object to send to the API.
     dataset = bigquery.Dataset(dataset_id)
-    dataset.location = "us-central1"  # Replace with your preferred location
+    dataset.location = "us-central1" 
+    # Attempt to create the dataset if it doesn't exist
     try:
        dataset = client.create_dataset(dataset, timeout=30)  # Make an API request.
        print("Created dataset {}.{}".format(client.project, dataset.dataset_id))
@@ -74,10 +75,10 @@ def upload_df_to_bigquery(dataframe: pd.DataFrame, project_id: str, dataset_id: 
 
     table_id = f"{dataset_id}.{table_name}"
 
-    # Modify job_config for partitioning and truncating
+    # Modify job_config
     job_config = bigquery.LoadJobConfig(
-          autodetect=True,
-          write_disposition='WRITE_APPEND',
+          autodetect=True, # Let it guess the schema
+          write_disposition='WRITE_APPEND', # Append to current data
           create_disposition='CREATE_IF_NEEDED'
     )
 
@@ -95,6 +96,7 @@ def upload_df_to_bigquery(dataframe: pd.DataFrame, project_id: str, dataset_id: 
         print(e)
         raise e
 
+
 def main(request):
 
     # Extract data from weather API
@@ -103,7 +105,7 @@ def main(request):
     # Transform data using Pandas
     df = transform_data(data)
 
-    # Load data into BigQuery
+    # Load data into BigQuery, parameters are extracted from incoming request.
     gcp_project_id = request.get_json()['gcp_project_id']
     gcp_dataset_name = request.get_json()['gcp_dataset_name']
     gcp_table_name = request.get_json()['gcp_table_name']
@@ -111,8 +113,8 @@ def main(request):
 
     return {"status": "success"}
 
+# For local testing without deploying to GCP.
 if __name__ == "__main__":
-    # For local testing
     api_key = "SampleApiKey" # Use your API key
     city = "Thessaloniki" # Use your selected location
     gcp_project_id = "weather-data-analysis-474716" # Use your GCP Project ID
