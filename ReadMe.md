@@ -3,6 +3,13 @@
 ## Description
 ETL pipeline that fetches hourly weather data from WeatherAPI, transforms it using Pandas, and stores it in BigQuery.
 
+## Architecture
+
+* Extract: A Python script sends HTTP requests to the OpenWeatherMap API to fetch real-time weather data for specific cities.
+* Transform: The nested JSON response is flattened and cleaned using Pandas. Data types are enforced to ensure schema consistency.
+* Load: The transformed DataFrame is appended to a BigQuery table using the google-cloud-bigquery client.
+* Orchestration: Cloud Scheduler triggers the function hourly.
+
 ## Tech Stack
 - Python (requests, pandas)
 - Google Cloud Platform (Cloud Functions, Cloud Scheduler, BigQuery)
